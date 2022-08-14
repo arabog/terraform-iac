@@ -22,6 +22,10 @@ providers.tf
 variables.tf  
 main.tf    
 
+=====================  
+ssh-config.tpi
+userdata.tpi
+
 *copy the provider codd and save in providers.tf file*  
 terraform {
   required_providers {
@@ -245,14 +249,29 @@ Host ${hostname}
     IdentifyFile ${identifyFile}
 EOF
 
-### Provisioners
+### Provisioners (Optional)
 https://www.terraform.io/language/resources/provisioners/syntax
 
+Provisners is used to configure vscode on a local terminal
+to be able to ssh into d ec2 instance  
+
+create a linux-ssh-config.tpl file
+
+https://www.terraform.io/language/functions/templatefile  
 
 
-=====================
-ssh-config.tpi
-userdata.tpi
+run `terraform plan`  
+
+`terraform state list`
+
+aws_instance.dev-terraform-instance refers to d instance name in terraform  
+`terraform apply -replace aws_instance.dev-terraform-instance`  
+
+cat ~/.aws/config  
+
+![terra9](terra9.png?raw=true "terra9")
+
+
 
 
 

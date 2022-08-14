@@ -123,5 +123,17 @@ resource "aws_instance" "dev-terraform-instance" {
   tags = {
     Name = "dev-instance"
   }
+
+  provisioner "local-exec" {
+    command = templatefile("linux-ssh-config.tpl", {
+      hostname = self.public_ip,
+      # instance type is ubuntu
+      user = "ubuntu",
+      identifyFile = "~/.ssh/babskey"
+    })
+
+    interpreter = ["bash", "-c"]
+  }
 }
+
 
