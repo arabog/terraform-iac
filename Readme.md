@@ -271,7 +271,8 @@ cat ~/.aws/config
 
 ![terra9](terra9.png?raw=true "terra9")
 
-
+### Destroy resources created
+`terraform destroy`
 
 
 
