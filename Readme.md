@@ -250,25 +250,6 @@ https://www.terraform.io/language/resources/provisioners/syntax
 
 
 
-![terra4](terra4.png?raw=true "terra4")
-![terra4](terra4.png?raw=true "terra4")
-![terra4](terra4.png?raw=true "terra4")
-
-
-
-![terra4](terra4.png?raw=true "terra4")
-![terra4](terra4.png?raw=true "terra4")
-![terra4](terra4.png?raw=true "terra4")
-![terra4](terra4.png?raw=true "terra4")
-
-
-![terra4](terra4.png?raw=true "terra4")
-![terra4](terra4.png?raw=true "terra4")
-![terra4](terra4.png?raw=true "terra4")
-![terra4](terra4.png?raw=true "terra4")
-
-
-
 =====================
 ssh-config.tpi
 userdata.tpi
