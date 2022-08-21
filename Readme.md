@@ -16,7 +16,7 @@
 
 Use the Amazon Web Services (AWS) provider to interact with the many resources supported by AWS e.g Interact with Lambda, RDS, and IAM etc. You must configure the provider with the proper credentials before you can use it. There other providers for other cloud services like Google, Azure etc.  
 
-### file structure
+### File structure
 terraform.tfvars  
 providers.tf  
 variables.tf  
@@ -27,6 +27,7 @@ ssh-config.tpi
 userdata.tpi
 
 *copy the provider codd and save in providers.tf file*  
+```   
 terraform {
   required_providers {
     aws = {
@@ -34,19 +35,23 @@ terraform {
     }
   }
 }
+```
 
 ### Configure the AWS Provider: Shared Configuration and Credentials Files
+```
 provider "aws" {
   region                   = "us-east-1"
   shared_credentials_files = ["~/.aws/credentials"]
   profile                  = "terraform"
 }
+```  
 
-*dn run `terraform init` in terminal*  
+*Then run `terraform init` in terminal*  
 
 ### Deploy VPC
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc
 
+```
 resource "aws_vpc" "babs_vpc" {
   cidr_block = "10.123.0.0/16"
   enable_dns_hostnames = true
@@ -56,14 +61,14 @@ resource "aws_vpc" "babs_vpc" {
     Name = "dev"
   }
 }
+```  
 
-
-run `terraform plan`  
+Run `terraform plan`  
 
 ![terra1](terra1.png?raw=true "terra1")
 ![terra2](terra2.png?raw=true "terra2")
 
-run `terraform apply` then type yes
+Run `terraform apply` then type yes
 
 ![terra3](terra3.png?raw=true "terra3")
 
@@ -102,10 +107,12 @@ to destroy the created environment
 `terraform destroy`
 
 to set up the resources again  
-`terraform apply`
+`terraform apply`  
 
 
 ### Deploy subnet
+
+```
 resource "aws_subnet" "babs_public_subnet" {
   vpc_id     = aws_vpc.babs_vpc.id
   cidr_block = "10.123.1.0/24"
@@ -116,25 +123,27 @@ resource "aws_subnet" "babs_public_subnet" {
     Name = "dev-public-subnet"
   }
 }
+```
 
-run `terraform plan`
+Run `terraform plan`  
 
-run `terraform apply` 
-if dont want to type `yes` when u run terrafom
-`terraform apply -auto-approve`
+Run `terraform apply` 
+
+if dont want to type `yes` when u run terrafom  
+`terraform apply -auto-approve`  
 
 ![terra8](terra8.png?raw=true "terra8")
 
 ### Internet Gateway and Terraform fmt
-`terraform fmt` format any inconsistencies in the directory
-
-`terraform plan`
-`terraform apply`
+`terraform fmt` format any inconsistencies in the directory  
+  
+`terraform plan`  
+`terraform apply`  
 
 ### Route Table
-https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table  
 
-https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route  
 
 
 *Bridging gap btw route table and subnet*  
@@ -145,9 +154,11 @@ https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rout
 ### ami image
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami
 
-check inside datasources.tf
+check inside datasources.tf  
 
-Basic Example Using AMI Lookup
+Basic Example Using AMI Lookup  
+
+```
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -172,17 +183,19 @@ resource "aws_instance" "web" {
     Name = "HelloWorld"
   }
 }
+```  
 
-u need owners value:  
+u need owners value:    
 go to ec2 dashboard, launch ec2 instance under, 
 Application and OS Images (Amazon Machine Image) section 
-select Ubuntu AMI (any free tier). copy ami-08d4ac5b634553e16.
+select Ubuntu AMI (any free tier). copy ami-08d4ac5b634553e16.  
 
 Go back to the AMIs under Images. Change Owned by me dropdown 
 to public Images and paste the ami u copied `ami-08d4ac5b634553e16`
 into the search input. Locate the ami and go to the owner section
-to copy the number display, 099720109477.
+to copy the number display, 099720109477.  
 
+```
 data "aws_ami" "server-ami" {
   most_recent      = true
   owners           = ["099720109477"]
@@ -193,23 +206,25 @@ data "aws_ami" "server-ami" {
   }
 
 }
+```
 
-run `terraform apply`
+Run `terraform apply`  
 
 ### key pair
-run in the terminal `ssh-keygen -t ed25519` returns:  
-Generating public/private ed25519 key pair.
-Enter file in which to save the key (/home/aduke/.ssh/id_ed25519): 
+Run in the terminal `ssh-keygen -t ed25519` returns:    
+Generating public/private ed25519 key pair.  
+Enter file in which to save the key (/home/aduke/.ssh/id_ed25519):   
 
-rename the path by entering ds: /home/aduke/.ssh/babskey
+rename the path by entering ds: /home/aduke/.ssh/babskey  
 
-Enter file in which to save the key (/home/aduke/.ssh/id_ed25519): /home/aduke/.ssh/babskey
+Enter file in which to save the key (/home/aduke/.ssh/id_ed25519): /home/aduke/.ssh/babskey  
 
-run `ls ~/.ssh`
-babskey  babskey.pub
+Run `ls ~/.ssh`  
+babskey  babskey.pub  
 
 
 ### EC2 Instance
+```
 resource "aws_instance" "web" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
@@ -218,61 +233,64 @@ resource "aws_instance" "web" {
     Name = "HelloWorld"
   }
 }
+```
 
-run `terraform state show aws_key_pair.babs_keypair`
+Run `terraform state show aws_key_pair.babs_keypair`  
 
 ### User Data
-Create userdata template, userdata.tpl
+Create userdata template, userdata.tpl  
 
-to see the instance public ip:   
-`terraform state list`
-to get the instance name  
-`aws_instance.dev-terraform-instance`
+to see the instance public ip:     
+`terraform state list`  
+to get the instance name    
+`aws_instance.dev-terraform-instance`  
 
-then run: `terraform state show aws_instance.dev-terraform-instance`
+then run: `terraform state show aws_instance.dev-terraform-instance`  
 
-go to: public_ip = "107.22.87.56" and copy
+go to: public_ip = "107.22.87.56" and copy  
 
 ### SSH into d ec2
-ssh -i ~/.ssh/babskey ubuntu@107.22.87.56
+ssh -i ~/.ssh/babskey ubuntu@107.22.87.56  
 
-docker --version
+docker --version  
 
 ### SSH Config Scripts
-cat ~/.aws/config
+cat ~/.aws/config  
 
-cat << EOF >> ~/.aws/config
+cat << EOF >> ~/.aws/config  
 
+```
 Host ${hostname}
     Hostname ${hostname}
     User ${user}
     IdentifyFile ${identifyFile}
 EOF
+```
 
 ### Provisioners (Optional)
 https://www.terraform.io/language/resources/provisioners/syntax
 
 Provisners is used to configure vscode on a local terminal
-to be able to ssh into d ec2 instance  
+to be able to ssh into d ec2 instance    
 
-create a linux-ssh-config.tpl file
+create a linux-ssh-config.tpl file  
 
-https://www.terraform.io/language/functions/templatefile  
+https://www.terraform.io/language/functions/templatefile    
 
 
-run `terraform plan`  
+Run `terraform plan`    
 
-`terraform state list`
+`terraform state list`  
 
 aws_instance.dev-terraform-instance refers to d instance name in terraform  
-`terraform apply -replace aws_instance.dev-terraform-instance`  
+`terraform apply -replace aws_instance.dev-terraform-instance`    
 
-cat ~/.aws/config  
+cat ~/.aws/config    
 
 ![terra9](terra9.png?raw=true "terra9")
 
 ### Destroy resources created
-`terraform destroy`
+`terraform destroy -auto-approve`  
 
 
 
